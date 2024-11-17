@@ -5,7 +5,6 @@
 from flask import Flask, render_template, request
 from EmotionDetection.emotion_detector import emotion_detector
 
-#Initiate the flask app : TODO
 app = Flask("Emotion Detection")
 
 @app.route("/emotionDetector")
@@ -13,6 +12,10 @@ app = Flask("Emotion Detection")
 def sent_analyzer():
     # Retrieve the text to analyze from the request arguments
     text_to_analyze = request.args.get('textToAnalyze')
+
+   # Error checking - if text_to_analyze is empty, return None - From IBM STAFF recommendation - ritika
+    if not text_to_analyze.strip():
+        return "Invalid text! Please try again!"
 
     # Pass the text to the emotion_detector function and store the response
     response = emotion_detector(text_to_analyze)
@@ -23,8 +26,9 @@ def sent_analyzer():
     # Delete dominant_emotion from the dictionary so we can print the dict simply to get the customer's desired format
     del response['dominant_emotion']
 
-    # Return a formatted string scores and dominant emotion per customer request
+    # If detector stat Ok - Return a formatted string scores and dominant emotion per customer request
     return "For the given statement, the system response is " + str(response) + " The dominant emotion is " + dominant_emotion
+        
 
 @app.route("/")
 def render_index_page():
